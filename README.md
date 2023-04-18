@@ -1,10 +1,13 @@
 # go-sse
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/alexandrevicenzi/go-sse)](https://goreportcard.com/report/github.com/alexandrevicenzi/go-sse)
+[![Go Report Card](https://goreportcard.com/badge/github.com/nfwsncked/go-sse)](https://goreportcard.com/report/github.com/nfwsncked/go-sse)
 [![Build Status](https://travis-ci.org/alexandrevicenzi/go-sse.svg?branch=master)](https://travis-ci.org/alexandrevicenzi/go-sse)
-[![GoDoc](https://godoc.org/github.com/alexandrevicenzi/go-sse?status.svg)](http://godoc.org/github.com/alexandrevicenzi/go-sse)
+[![GoDoc](https://godoc.org/github.com/nfwsncked/go-sse?status.svg)](http://godoc.org/github.com/nfwsncked/go-sse)
 
 Server-Sent Events for Go
+
+## Fork reasoning
+Some event driven patterns require direct access to the client upon connect/disconnect. Original repo doesn't provide any potential access to these and seems to be not that much maintained. I didn't find any reasonably good implementations across other forks, so why not contributing myself or with your help :)
 
 ## About
 
@@ -25,7 +28,7 @@ It's [supported](http://caniuse.com/#feat=eventsource) by all major browsers and
 
 ## Instalation
 
-`go get github.com/alexandrevicenzi/go-sse`
+`go get github.com/nfwsncked/go-sse`
 
 ## Example
 
@@ -40,7 +43,7 @@ import (
     "strconv"
     "time"
 
-    "github.com/alexandrevicenzi/go-sse"
+    "github.com/nfwsncked/go-sse"
 )
 
 func main() {
@@ -73,7 +76,7 @@ e.onmessage = function(event) {
 };
 ```
 
-More examples available [here](https://github.com/alexandrevicenzi/go-sse/tree/master/_examples).
+More examples available [here](https://github.com/nfwsncked/go-sse/tree/master/_examples).
 
 ## License
 

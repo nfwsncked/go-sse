@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/alexandrevicenzi/go-sse"
 	"github.com/gin-gonic/gin"
+	"github.com/nfwsncked/go-sse"
 )
 
 func main() {

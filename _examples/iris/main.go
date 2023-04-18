@@ -6,9 +6,6 @@ import (
 	"os"
 	"strconv"
 	"time"
-
-	"github.com/alexandrevicenzi/go-sse"
-	"github.com/kataras/iris/v12"
 )
 
 func main() {

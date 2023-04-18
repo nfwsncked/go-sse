@@ -4,8 +4,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/alexandrevicenzi/go-sse"
-	"github.com/labstack/echo/v4"
+	"github.com/nfwsncked/go-sse"
 )
 
 func main() {

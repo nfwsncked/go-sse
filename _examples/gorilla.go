@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/alexandrevicenzi/go-sse"
 	"github.com/gorilla/mux"
+	"github.com/nfwsncked/go-sse"
 )
 
 func main() {
