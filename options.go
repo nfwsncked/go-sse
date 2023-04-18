@@ -14,6 +14,12 @@ type Options struct {
 	// ChannelNameFunc allow to create custom channel names.
 	// Default channel name is the request path.
 	ChannelNameFunc func(*http.Request) string
+	// ClientNameFunc allows to create custom name for client
+	ClientNameFunc func(r *http.Request) string
+	// ClientConnectedFunc allows to receive callback upon client connect
+	ClientConnectedFunc func(c *Client)
+	// ClientDisconnectedFunc allows to receive callback upon client disconnect
+	ClientDisconnectedFunc func(c *Client)
 	// All usage logs end up in Logger
 	Logger *log.Logger
 }

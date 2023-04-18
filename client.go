@@ -3,13 +3,16 @@ package sse
 // Client represents a web browser connection.
 type Client struct {
 	lastEventID,
+	Name string
 	channel string
-	send chan *Message
+	send    chan *Message
 }
 
 func newClient(lastEventID, channel string) *Client {
+	name := "client-1"
 	return &Client{
 		lastEventID,
+		name,
 		channel,
 		make(chan *Message),
 	}

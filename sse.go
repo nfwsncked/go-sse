@@ -80,10 +80,16 @@ func (s *Server) ServeHTTP(response http.ResponseWriter, request *http.Request) 
 		c := newClient(lastEventID, channelName)
 		s.addClient <- c
 		closeNotify := request.Context().Done()
+		if s.options.ClientConnectedFunc != nil {
+			go s.options.ClientConnectedFunc(c)
+		}
 
 		go func() {
 			<-closeNotify
 			s.removeClient <- c
+			if s.options.ClientDisconnectedFunc != nil {
+				go s.options.ClientDisconnectedFunc(c)
+			}
 		}()
 
 		response.WriteHeader(http.StatusOK)
@@ -91,7 +97,10 @@ func (s *Server) ServeHTTP(response http.ResponseWriter, request *http.Request) 
 
 		for msg := range c.send {
 			msg.retry = s.options.RetryInterval
-			response.Write(msg.Bytes())
+			_, err := response.Write(msg.Bytes())
+			if err != nil {
+				log.Printf("error sending message: %v", err)
+			}
 			flusher.Flush()
 		}
 	} else if request.Method != "OPTIONS" {
@@ -159,7 +168,7 @@ func (s *Server) GetChannel(name string) (*Channel, bool) {
 
 // Channels returns a list of all channels to the server.
 func (s *Server) Channels() []string {
-	channels := []string{}
+	var channels []string
 
 	s.mu.RLock()
 

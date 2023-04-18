@@ -1,12 +1,28 @@
 package sse
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"sync"
 	"testing"
+	"time"
 )
+
+var clientConnectedCallbackCalls = 0
+var clientDisconnectedCallbackCalls = 0
+
+func clientConnected(c *Client) {
+	clientConnectedCallbackCalls++
+	log.Printf("client connected: %v", c)
+}
+
+func clientDisconnected(c *Client) {
+	clientDisconnectedCallbackCalls++
+	log.Printf("client disconnected: %v", c)
+}
 
 func TestNewServerNilOptions(t *testing.T) {
 	srv := NewServer(nil)
@@ -35,7 +51,9 @@ func TestServer(t *testing.T) {
 	messageCount := 0
 
 	srv := NewServer(&Options{
-		Logger: log.New(os.Stdout, "go-sse: ", log.Ldate|log.Ltime|log.Lshortfile),
+		ClientConnectedFunc:    clientConnected,
+		ClientDisconnectedFunc: clientDisconnected,
+		Logger:                 log.New(os.Stdout, "go-sse: ", log.Ldate|log.Ltime|log.Lshortfile),
 	})
 
 	defer srv.Shutdown()
@@ -85,5 +103,43 @@ func TestServer(t *testing.T) {
 
 	if messageCount != channelCount*clientCount {
 		t.Errorf("Expected %d messages but got %d", channelCount*clientCount, messageCount)
+	}
+}
+
+func TestServerAdditionalOptions(t *testing.T) {
+	srv := NewServer(&Options{
+		ClientConnectedFunc:    clientConnected,
+		ClientDisconnectedFunc: clientDisconnected,
+		Logger:                 log.New(os.Stdout, "go-sse: ", log.Ldate|log.Ltime|log.Lshortfile),
+	})
+
+	defer srv.Shutdown()
+
+	http.Handle("/events/", srv)
+	go func() {
+		err := http.ListenAndServe("localhost:8081", nil)
+		if err != nil {
+			log.Printf("error running http server: %v", err)
+		}
+	}()
+
+	client := http.Client{}
+
+	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(ctx, time.Second)
+	defer cancel()
+	req, err := http.NewRequestWithContext(ctx, "GET", "http://localhost:8081/events/asd", nil)
+	res, err := client.Do(req)
+	if err != nil {
+		t.Fatalf("cannot get event url")
+	}
+	defer res.Body.Close()
+	<-ctx.Done()
+	time.Sleep(time.Millisecond * 300)
+	if clientConnectedCallbackCalls != 1 {
+		t.Errorf("clientConnectedCallbackCalls != 1")
+	}
+	if clientDisconnectedCallbackCalls != 1 {
+		t.Errorf("clientDisconnectedCallbackCalls != 1")
 	}
 }
