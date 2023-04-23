@@ -24,7 +24,7 @@ func TestSendMessage(t *testing.T) {
 	lastID := make(chan string, 1)
 	msgCount := make(chan int, 1)
 
-	c := newClient("", "client")
+	c := newClient("", "", "client")
 
 	go func() {
 		i := 0

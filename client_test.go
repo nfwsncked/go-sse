@@ -6,7 +6,7 @@ import (
 )
 
 func TestSetLastId(t *testing.T) {
-	c := newClient("", "channel")
+	c := newClient("", "", "channel")
 
 	go func() {
 		for msg := range c.send {

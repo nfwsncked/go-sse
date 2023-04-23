@@ -77,7 +77,7 @@ func (s *Server) ServeHTTP(response http.ResponseWriter, request *http.Request) 
 		}
 
 		lastEventID := request.Header.Get("Last-Event-ID")
-		c := newClient(lastEventID, channelName)
+		c := newClient(lastEventID, "client-name-default", channelName)
 		s.addClient <- c
 		closeNotify := request.Context().Done()
 		if s.options.ClientConnectedFunc != nil {
